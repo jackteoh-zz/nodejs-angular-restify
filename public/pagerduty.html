@@ -1,0 +1,81 @@
+<!doctype html>
+<html lang="en" ng-app="app">
+  <head>
+    <title>Dashboard</title>
+    <!-- Required meta tags -->
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+
+    <!-- Bootstrap CSS -->
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-beta.2/css/bootstrap.min.css" integrity="sha384-PsH8R72JQ3SOdhVi3uxftmaW6Vc51MKb0q5P2rRUpPvrszuE4W1povHYgTpBfshb" crossorigin="anonymous">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.css" />
+    <link href="/css/template.css" rel="stylesheet">
+  </head>
+  <body ng-controller="pagerdutyctrl">
+
+    <nav class="navbar navbar-expand-md navbar-dark bg-dark fixed-top">
+      <a class="navbar-brand" href="/">Dashboard V7</a>
+      <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarsExampleDefault" aria-controls="navbarsExampleDefault" aria-expanded="false" aria-label="Toggle navigation">
+        <span class="navbar-toggler-icon"></span>
+      </button>
+
+      <div class="collapse navbar-collapse" id="navbarsExampleDefault">
+        <ul class="navbar-nav mr-auto">
+          <li class="nav-item">
+            <a class="nav-link" href="dyndns.html">DynDns</a>
+          </li>
+          <li class="nav-item active">
+            <a class="nav-link disabled" href="pagerduty.html">PagerDuty</a>
+          </li>
+        </ul>
+      </div>
+    </nav>
+
+    <main role="main" class="container">
+
+      <form>
+        <div class="form-row">
+          <div class="form-group col-md-6">
+            <label for="date">Date</label>
+            <input type="datetime-local" class="form-control" ng-model="datetime.date" required>
+          </div>
+        </div>
+        <button class="btn btn-info" ng-click="createschedule()">Create Schedule</button>
+      </form>
+
+      <hr>
+      <button class="btn btn-info" ng-click="loadschedule()">Load Schedule</button>
+      <table class="table table-dark table-sm table-striped">
+        <thead>
+          <th>#</th>
+          <th>Start Time</th>
+          <th>End Time</th>
+          <th>Status</th>
+          <th>Services</th>
+          <th>Description</th>
+        </thead>
+        <tbody>
+          <tr ng-repeat="(key, value) in pdObject | filter : search">
+            <td>{{value.sequence_number}}</td>
+            <td>{{value.start_time | date : 'short'}}</td>
+            <td>{{value.end_time | date : 'short'}}</td>
+            <td>
+              <div ng-if="(datenow | date :'yyyy-MM-dd HH:mm:ss Z') > (value.end_time| date :'yyyy-MM-dd HH:mm:ss Z') "><b>Passed</b></div>
+              <div ng-if="(datenow | date :'yyyy-MM-dd HH:mm:ss Z') < (value.start_time | date :'yyyy-MM-dd HH:mm:ss Z')"><button type="button" class="btn btn-sm btn-info" ng-click="endschedule(value.id)">End Schedule</button><b>Future</b></div>
+              <div ng-if="(value.start_time | date :'yyyy-MM-dd HH:mm:ss Z') < (datenow | date :'yyyy-MM-dd HH:mm:ss Z') && (datenow | date :'yyyy-MM-dd HH:mm:ss Z') < (value.end_time | date :'yyyy-MM-dd HH:mm:ss Z')"><button type="button" class="btn btn-sm btn-info" ng-click="endschedule(value.id)">End Schedule</button><b>Current</b></div>
+            </td>
+            <td>{{value.services[0].name}} - {{value.services[0].id}}</td>
+            <td>{{value.description}}</td>
+          </tr>
+        </tbody>
+      </table>
+
+    </main><!-- /.container -->
+
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.3/umd/popper.min.js" integrity="sha384-vFJXuSJphROIrBnz7yo7oB41mKfc8JzQZiCq4NCceLEaO4IHwicKwpJf9c9IpFgh" crossorigin="anonymous"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-beta.2/js/bootstrap.min.js" integrity="sha384-alpBpkh1PFOepccYVYDB4do5UnbKysX5WZXm3XxPqe5iKTfUKjNkCk9SaVuEZflJ" crossorigin="anonymous"></script>
+    <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.6.6/angular.min.js"></script>
+    <script src="./js/pagerduty.js"></script>
+  </body>
+</html>
