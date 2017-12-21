@@ -1,10 +1,10 @@
 angular.module("app",[])
 .controller('dyndnsctrl',dyndnsctrl);
 
-function dyndnsctrl($scope,$http){
+function dyndnsctrl($scope,$http,$timeout){
     
     $scope.auth = {};
-    
+	
     $scope.checkToken = function(){
         $scope.token = sessionStorage.getItem("token")
         if ($scope.token) {
@@ -19,7 +19,7 @@ function dyndnsctrl($scope,$http){
             $scope.showfis = res.data;
         }); 
     };
-
+	
     $scope.signin = function () {
         $http({
             method: 'POST',
@@ -36,6 +36,7 @@ function dyndnsctrl($scope,$http){
         })
         .finally(function () {
             loadfi();
+			$timeout($scope.signout, 300000)
         })
     };
 

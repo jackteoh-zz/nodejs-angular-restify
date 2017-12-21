@@ -1,3 +1,5 @@
 node_modules
 *.json
 
+public/index.html
+server.js
